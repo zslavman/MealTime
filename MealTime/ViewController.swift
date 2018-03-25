@@ -15,10 +15,9 @@ class ViewController: UIViewController, UITableViewDataSource {
     var array = [Date]()
     
     lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .short
-        return formatter
+        let dateFormater = DateFormatter()
+        dateFormater.dateFormat = "MM.dd.yy - HH:mm:ss"
+        return dateFormater
     }()
     
     
