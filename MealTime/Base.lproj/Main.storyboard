@@ -23,7 +23,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meal" translatesAutoresizingMaskIntoConstraints="NO" id="CEe-pl-BM8">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" semanticContentAttribute="spatial" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="meal" translatesAutoresizingMaskIntoConstraints="NO" id="CEe-pl-BM8">
                                 <rect key="frame" x="-4" y="64" width="328" height="122"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="CEe-pl-BM8" secondAttribute="height" multiplier="600:223" id="ez6-fD-nuU"/>
@@ -50,11 +50,11 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="qEb-Pq-BVh" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="51" id="AT3-WM-axj"/>
                             <constraint firstAttribute="trailingMargin" secondItem="FTt-aI-a5P" secondAttribute="trailing" constant="-20" id="EDz-RQ-Syu"/>
                             <constraint firstItem="CEe-pl-BM8" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="MGe-kI-Kib"/>
                             <constraint firstItem="CEe-pl-BM8" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="Qr6-p5-zcj"/>
                             <constraint firstAttribute="trailingMargin" secondItem="qEb-Pq-BVh" secondAttribute="trailing" constant="14" id="S4C-Og-mwI"/>
-                            <constraint firstItem="qEb-Pq-BVh" firstAttribute="top" secondItem="CEe-pl-BM8" secondAttribute="bottom" constant="-71" id="bLf-bZ-BAi"/>
                             <constraint firstItem="FTt-aI-a5P" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="epp-LF-toz"/>
                             <constraint firstAttribute="trailingMargin" secondItem="CEe-pl-BM8" secondAttribute="trailing" constant="-20" id="ksp-MM-g03"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="FTt-aI-a5P" secondAttribute="bottom" id="mAs-ff-v1s"/>

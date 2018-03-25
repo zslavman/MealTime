@@ -15,9 +15,8 @@ class ViewController: UIViewController, UITableViewDataSource{
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var countTF: UILabel!
     
-    var array = [Date]()
     lazy var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    var instances: [Happydate] = [] // массив экземпляров Кор Дата
+    var instances: [Happydate] = [] // массив экземпляров Happydate из Core Data
     
     lazy var dateFormatter: DateFormatter = {
         let dateFormater = DateFormatter()
@@ -40,12 +39,18 @@ class ViewController: UIViewController, UITableViewDataSource{
     
     
     
-    // Получение данных (способ 2)
+    // Получение данных из Core Data
     func fetchData(){
-        
         let fetch_Raquest: NSFetchRequest<Happydate> = Happydate.fetchRequest()
+        
+        // создадим дискриптор, который выведет отстортированные данные по полю fixationTime, по убыванию
+        let sortDescriptor = NSSortDescriptor(key: "fixationTime", ascending: false)
+        fetch_Raquest.sortDescriptors = [sortDescriptor]
+        
         do {
             instances = try context.fetch(fetch_Raquest)
+            // instances.sort(by: {$0.fixationTime < $1.fixationTime})
+            // instances.sortInPlace({ $0.fixationTime($1) == ComparisonResult.OrderedAscending })
             tableView.reloadData()
             countTF.text = String(instances.count)
         }
@@ -73,30 +78,21 @@ class ViewController: UIViewController, UITableViewDataSource{
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell")
-        //        let date = array[indexPath.row]
         let dateToPrint:Happydate = instances[indexPath.row]
         cell!.textLabel!.text = dateFormatter.string(from: dateToPrint.fixationTime as! Date)
-        
-        //        cell!.textLabel!.text = dateFormatter.string(from: date)
-        
         return cell!
     }
     
     
     
-    
+    // нажали на "+"
     @IBAction func onAddClick(_ sender: UIBarButtonItem) {
-        
-        //        let date = Date()
-        //        array.append(date)
-        //        tableView.reloadData()
-        
         let date = Date() // запоминаем дату во время нажатия на "+"
         let inst: Happydate = Happydate(context: context)
         inst.fixationTime = date as NSDate
-        instances.append(inst)
+        instances.insert(inst, at: 0)
+        
         countTF.text = String(instances.count)
         do {
             try context.save()
@@ -107,24 +103,21 @@ class ViewController: UIViewController, UITableViewDataSource{
     
     
     
+    // нажали на "Очист."
     @IBAction func onDeleteClick(_ sender: UIBarButtonItem) {
         
-        instances.removeAll()
-        countTF.text = String(instances.count)
-
-        
-        // медленный способ
-//        let fetchRequest = NSFetchRequest<Happydate>(entityName: "Happydate")
-//        do {
-//            let items = try context.fetch(fetchRequest as! NSFetchRequest<NSFetchRequestResult>) as! [NSManagedObject]
-//            
-//            for item in items {
-//                context.delete(item)
-//            }
-//            try context.save()
-//            tableView.reloadData()
-//        }
-//        catch { print("Не удалось сохранить данные") }
+        //        медленный способ
+        //        let fetchRequest = NSFetchRequest<Happydate>(entityName: "Happydate")
+        //        do {
+        //            let items = try context.fetch(fetchRequest as! NSFetchRequest<NSFetchRequestResult>) as! [NSManagedObject]
+        //
+        //            for item in items {
+        //                context.delete(item)
+        //            }
+        //            try context.save()
+        //            tableView.reloadData()
+        //        }
+        //        catch { print("Не удалось сохранить данные") }
         
         
         // быстрый способ - очистка всего контекста
@@ -133,17 +126,21 @@ class ViewController: UIViewController, UITableViewDataSource{
         do {
             try context.execute(deleteRequest)
             try context.save()
+            
+            instances.removeAll()
+            countTF.text = String(instances.count)
+            
             tableView.reloadData()
         }
         catch { print("Не удалось сохранить данные") }
-        
-        
-        
-        
-        
-
-        
     }
+        
+    
+    
+    
+    
+
+    
     
     
     
