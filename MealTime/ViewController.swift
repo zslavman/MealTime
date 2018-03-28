@@ -30,7 +30,8 @@ class ViewController: UIViewController, UITableViewDataSource{
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        // если не указывать ячейку на сторибоарде, то ее нужно указать так:
+//        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         
         fetchData()
     }
@@ -62,9 +63,9 @@ class ViewController: UIViewController, UITableViewDataSource{
     
     
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Время когда я ел вкусняшки"
-    }
+//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        return "Время когда я ел вкусняшки"
+//    }
     
     
     
@@ -78,10 +79,10 @@ class ViewController: UIViewController, UITableViewDataSource{
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell")
+        let cell = tableView.dequeueReusableCell(withIdentifier: "myCell", for: indexPath)
         let dateToPrint:Happydate = instances[indexPath.row]
-        cell!.textLabel!.text = dateFormatter.string(from: dateToPrint.fixationTime as! Date)
-        return cell!
+        cell.textLabel!.text = dateFormatter.string(from: dateToPrint.fixationTime as! Date)
+        return cell
     }
     
     
@@ -138,13 +139,60 @@ class ViewController: UIViewController, UITableViewDataSource{
     
     
     
-    
+    // клик по ячейке [НЕ СРАБАТЫВАЕТ!]
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // убираем выделение ячейки
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+    }
 
     
     
     
+   
+//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+//        if editingStyle != .delete{ return }
+//
+//        instances.remove(at: indexPath.row)
+//        tableView.deleteRows(at: [indexPath], with: .automatic)
+//        countTF.text = String(instances.count)
+//        tableView.reloadData()
+//    }
     
     
+    
+    // добавляем фунуции к ячейке при свайпе влево
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        // УДАЛЕНИЕ ячейки
+        let deleteAction = UITableViewRowAction(style: .default, title: "Удалить") {
+            (action, IndexPath) in
+            
+            self.instances.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            self.countTF.text = String(self.instances.count)
+            tableView.reloadData()
+            
+            //            // удаление с БД
+            //            let objectToDelete = self.instances[indexPath.row]
+            //            self.context.delete(objectToDelete)
+            //
+            //            do {
+            //                try self.context.save()
+            //            }
+            //            catch{
+            //                print("После удаления не удалось сохранить т.к. \(error.localizedDescription)")
+            //            }
+        }
+        return [deleteAction]
+    }
+
+
+
+
+
+
+
 }
 
 
