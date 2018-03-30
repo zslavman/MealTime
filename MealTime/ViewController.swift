@@ -9,13 +9,18 @@
 import UIKit
 import CoreData
 
-class ViewController: UIViewController, UITableViewDataSource{
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
     
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var countTF: UILabel!
     
-    lazy var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    lazy var context:NSManagedObjectContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+//    let appDel:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+//    let context:NSManagedObjectContext = appDel.persistentContainer.viewContext
+    
+    
     var instances: [Happydate] = [] // массив экземпляров Happydate из Core Data
     
     lazy var dateFormatter: DateFormatter = {
@@ -31,7 +36,7 @@ class ViewController: UIViewController, UITableViewDataSource{
         super.viewDidLoad()
         
         // если не указывать ячейку на сторибоарде, то ее нужно указать так:
-//        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "myCell")
         
         fetchData()
     }
@@ -63,9 +68,9 @@ class ViewController: UIViewController, UITableViewDataSource{
     
     
     
-//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        return "Время когда я ел вкусняшки"
-//    }
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "Время когда я ел вкусняшки"
+    }
     
     
     
@@ -79,10 +84,10 @@ class ViewController: UIViewController, UITableViewDataSource{
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "myCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "myCell")
         let dateToPrint:Happydate = instances[indexPath.row]
-        cell.textLabel!.text = dateFormatter.string(from: dateToPrint.fixationTime as! Date)
-        return cell
+        cell?.textLabel!.text = dateFormatter.string(from: dateToPrint.fixationTime as! Date)
+        return cell!
     }
     
     
@@ -139,7 +144,7 @@ class ViewController: UIViewController, UITableViewDataSource{
     
     
     
-    // клик по ячейке [НЕ СРАБАТЫВАЕТ!]
+    // клик по ячейке
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // убираем выделение ячейки
         tableView.deselectRow(at: indexPath, animated: true)
@@ -148,16 +153,6 @@ class ViewController: UIViewController, UITableViewDataSource{
 
     
     
-    
-   
-//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-//        if editingStyle != .delete{ return }
-//
-//        instances.remove(at: indexPath.row)
-//        tableView.deleteRows(at: [indexPath], with: .automatic)
-//        countTF.text = String(instances.count)
-//        tableView.reloadData()
-//    }
     
     
     
@@ -168,21 +163,20 @@ class ViewController: UIViewController, UITableViewDataSource{
         let deleteAction = UITableViewRowAction(style: .default, title: "Удалить") {
             (action, IndexPath) in
             
+            // удаление с БД
+            let objectToDelete = self.instances[indexPath.row]
+            self.context.delete(objectToDelete)
+
             self.instances.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
             self.countTF.text = String(self.instances.count)
-            tableView.reloadData()
             
-            //            // удаление с БД
-            //            let objectToDelete = self.instances[indexPath.row]
-            //            self.context.delete(objectToDelete)
-            //
-            //            do {
-            //                try self.context.save()
-            //            }
-            //            catch{
-            //                print("После удаления не удалось сохранить т.к. \(error.localizedDescription)")
-            //            }
+            do {
+                try self.context.save()
+            }
+            catch{
+                print("После удаления не удалось сохранить т.к. \(error.localizedDescription)")
+            }
         }
         return [deleteAction]
     }

@@ -304,6 +304,7 @@
 				84F2731A2067171900D34027 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
