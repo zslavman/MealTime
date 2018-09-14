@@ -86,7 +86,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "myCell")
         let dateToPrint:Happydate = instances[indexPath.row]
-        cell?.textLabel!.text = dateFormatter.string(from: dateToPrint.fixationTime as! Date)
+		cell?.textLabel!.text = dateFormatter.string(from: dateToPrint.fixationTime! as Date)
         return cell!
     }
     
@@ -96,7 +96,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @IBAction func onAddClick(_ sender: UIBarButtonItem) {
         let date = Date() // запоминаем дату во время нажатия на "+"
         let inst: Happydate = Happydate(context: context)
-        inst.fixationTime = date as NSDate
+		inst.fixationTime = date
         instances.insert(inst, at: 0)
         
         countTF.text = String(instances.count)
